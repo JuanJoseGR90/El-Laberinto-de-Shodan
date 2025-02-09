@@ -1,5 +1,6 @@
-import static org.junit.jupiter.api.Assertions.*;
+package controlador_test;
 
+import static org.junit.jupiter.api.Assertions.*;
 import java.awt.event.KeyEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,13 +10,14 @@ import modelo.Jugador;
 import modelo.Laberinto;
 import modelo.Posicion;
 
-// Clase dummy para capturar el movimiento
+// Clase dummy para capturar movimientos.
 class DummyControlJuego extends ControlJuego {
     public int lastDeltaX = 0;
     public int lastDeltaY = 0;
 
     public DummyControlJuego(Laberinto laberinto, Jugador jugador) {
-        // Se pasa null para IA y vista, ya que no se usarán en el test.
+        // Creamos un controlador_test.DummyControlJuego pasando un laberinto y jugador válidos.
+        // Para los parámetros IA y Vista, pasamos objetos dummy mínimos.
         super(laberinto, jugador, null, null);
     }
 
@@ -27,6 +29,7 @@ class DummyControlJuego extends ControlJuego {
 }
 
 public class EventosControlTest {
+
     private Jugador jugador;
     private Laberinto laberinto;
     private DummyControlJuego dummyControlJuego;
@@ -34,17 +37,21 @@ public class EventosControlTest {
 
     @BeforeEach
     public void setUp() {
+        // Se crea un laberinto de 3x3 (no nulo)
         laberinto = new Laberinto(3, 3);
+        // Se inicializa el jugador en la posición (0,0)
         jugador = new Jugador(new Posicion(0, 0));
+        // Se crea el dummy usando objetos válidos
         dummyControlJuego = new DummyControlJuego(laberinto, jugador);
+        // Se crea la instancia de EventosControl con el jugador
         eventosControl = new EventosControl(jugador);
-        // Inyectamos la instancia dummy en EventosControl
+        // Se inyecta el dummy en EventosControl mediante el setter
         eventosControl.setControlJuego(dummyControlJuego);
     }
 
     @Test
     public void testKeyPressedUp() {
-        // Simulamos la pulsación de la tecla UP
+        // Simular pulsación de la tecla UP
         KeyEvent keyEvent = new KeyEvent(new java.awt.Panel(), KeyEvent.KEY_PRESSED,
                 System.currentTimeMillis(), 0, KeyEvent.VK_UP, 'U');
         eventosControl.keyPressed(keyEvent);
@@ -54,7 +61,7 @@ public class EventosControlTest {
 
     @Test
     public void testKeyPressedRight() {
-        // Simulamos la pulsación de la tecla RIGHT
+        // Simular pulsación de la tecla RIGHT
         KeyEvent keyEvent = new KeyEvent(new java.awt.Panel(), KeyEvent.KEY_PRESSED,
                 System.currentTimeMillis(), 0, KeyEvent.VK_RIGHT, 'R');
         eventosControl.keyPressed(keyEvent);

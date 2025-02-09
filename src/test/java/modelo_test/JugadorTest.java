@@ -1,5 +1,6 @@
-import static org.junit.jupiter.api.Assertions.*;
+package modelo_test;
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import modelo.Jugador;
@@ -16,7 +17,6 @@ public class JugadorTest {
     public void setUp() {
         // Crear un laberinto pequeño para pruebas, por ejemplo 3x3
         laberinto = new Laberinto(3, 3);
-        // Configurar las celdas sin eliminar las paredes (o modificar manualmente para la prueba)
         jugador = new Jugador(new Posicion(0, 0));
     }
 

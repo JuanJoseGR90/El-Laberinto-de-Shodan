@@ -6,6 +6,7 @@ import modelo.Jugador;
 
 public class EventosControl extends KeyAdapter {
     private Jugador jugador;
+    private ControlJuego controlJuego;
 
     public EventosControl(Jugador jugador) {
         this.jugador = jugador;
@@ -14,15 +15,22 @@ public class EventosControl extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        // Movimiento básico usando las flechas del teclado
+        int deltaX = 0, deltaY = 0;
         if (key == KeyEvent.VK_UP) {
-            jugador.mover(0, -1);
+            deltaY = -1;
         } else if (key == KeyEvent.VK_DOWN) {
-            jugador.mover(0, 1);
+            deltaY = 1;
         } else if (key == KeyEvent.VK_LEFT) {
-            jugador.mover(-1, 0);
+            deltaX = -1;
         } else if (key == KeyEvent.VK_RIGHT) {
-            jugador.mover(1, 0);
+            deltaX = 1;
+        }
+        // Se delega el manejo del movimiento al controlador principal
+        try {
+            controlJuego.procesarMovimiento(deltaX, deltaY);
+        } catch (Exception ex) {
+            System.err.println("Movimiento no permitido: " + ex.getMessage());
         }
     }
 }
+

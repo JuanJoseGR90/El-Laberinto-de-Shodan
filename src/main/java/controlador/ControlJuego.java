@@ -4,6 +4,7 @@ import modelo.Laberinto;
 import modelo.Jugador;
 import modelo.IAJugador;
 import modelo.Posicion;
+import util.GeneradorLaberinto;
 import vista.VistaLaberinto;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,5 +66,39 @@ import java.util.logging.Logger;
 
         public void finalizarJuego() {
             juegoTerminado = true;
+        }
+
+        public void reiniciarJuego() {
+            // Obtener las dimensiones actuales del laberinto
+            int ancho = laberinto.getAncho();
+            int alto = laberinto.getAlto();
+
+            // Crear y generar un nuevo laberinto
+            laberinto = new Laberinto(ancho, alto);
+            GeneradorLaberinto.generar(laberinto, 0, 0);
+
+            // Reiniciar la posición del jugador (asumimos que la posición inicial es (0,0))
+            jugador.getPosicion().setX(0);
+            jugador.getPosicion().setY(0);
+
+            // Reiniciar la posición de la IA de forma similar
+            iaJugador.getPosicion().setX(0);
+            iaJugador.getPosicion().setY(0);
+
+            // Actualizar la posición meta (por ejemplo, celda inferior derecha)
+            posicionMeta = new Posicion(ancho - 1, alto - 1);
+
+            // Recalcular la ruta de la IA utilizando A*
+            ControladorIA controladorIA = new ControladorIA(laberinto);
+            iaJugador.setRuta(controladorIA.calcularRuta(new Posicion(0, 0), posicionMeta));
+
+            // Reiniciar el estado del juego
+            juegoTerminado = false;
+
+            // Actualizar la vista (si la referencia de laberinto cambia, actualizarla en la vista)
+            if (vista != null) {
+                vista.setLaberinto(laberinto);
+                vista.repaint();
+            }
         }
     }

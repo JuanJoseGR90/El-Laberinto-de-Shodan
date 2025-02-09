@@ -4,18 +4,20 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import controlador.EventosControl;
 import modelo.Jugador;
+import modelo.IAJugador;
 
 public class VentanaPrincipal extends JFrame {
-    public VentanaPrincipal(Jugador jugador, VistaLaberinto vistaLaberinto) {
+    public VentanaPrincipal(Jugador jugador, IAJugador iaJugador, VistaLaberinto vistaLaberinto, PanelControles panelControles) {
         super("Juego del Laberinto");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        // Agrega la vista gráfica del laberinto
         add(vistaLaberinto, BorderLayout.CENTER);
-        // Se puede agregar un panel de controles en otra región, por ejemplo:
-        // add(new PanelControles(), BorderLayout.SOUTH);
+        // Agrega el panel de controles en la parte inferior
+        add(panelControles, BorderLayout.SOUTH);
 
-        // Registrar el controlador de eventos de teclado
+        // Se registra el KeyListener para controlar el movimiento del jugador
         addKeyListener(new EventosControl(jugador));
 
         pack();

@@ -11,6 +11,15 @@ public class Jugador {
         return posicion;
     }
 
+    /**
+     * Mueve al jugador desde su posición actual a una nueva posición.
+     *
+     * @param deltaX La variación en el eje X (por ejemplo, 1 para mover a la derecha, -1 para mover a la izquierda).
+     * @param deltaY La variación en el eje Y (por ejemplo, 1 para mover hacia abajo, -1 para mover hacia arriba).
+     * @param laberinto El laberinto en el cual se realiza el movimiento.
+     * @throws IllegalArgumentException Si la nueva posición se sale de los límites del laberinto.
+     * @throws IllegalStateException Si se intenta mover a través de una pared (por ejemplo, hay una pared a la derecha y se intenta mover a la derecha).
+     */
     public void mover(int deltaX, int deltaY, Laberinto laberinto) {
         int nuevoX = posicion.getX() + deltaX;
         int nuevoY = posicion.getY() + deltaY;

@@ -12,6 +12,10 @@ public class EventosControl extends KeyAdapter {
         this.jugador = jugador;
     }
 
+    public void setControlJuego(ControlJuego controlJuego) {
+        this.controlJuego = controlJuego;
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();

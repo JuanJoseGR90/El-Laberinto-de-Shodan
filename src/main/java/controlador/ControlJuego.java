@@ -49,7 +49,7 @@ import java.util.logging.Logger;
             // Aquí se puede actualizar el estado del juego, por ejemplo, comprobar si se alcanzó la meta
         }
 
-        private void actualizarJuego() {
+        public void actualizarJuego() {
             try {
                 iaJugador.avanzar();
                 if (jugador.getPosicion().equals(posicionMeta)) {
@@ -66,6 +66,10 @@ import java.util.logging.Logger;
 
         public void finalizarJuego() {
             juegoTerminado = true;
+        }
+
+        public boolean isJuegoTerminado() {
+            return juegoTerminado;
         }
 
         public void reiniciarJuego() {

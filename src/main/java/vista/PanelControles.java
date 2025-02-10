@@ -10,10 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Panel de controles que muestra botones y la información del juego (temporizador, movimientos y puntuación).
+ * Panel de controles que muestra botones (Iniciar, Pausa, Reiniciar) y la información del juego.
  */
 public class PanelControles extends JPanel {
     private JButton btnIniciar;
+    private JButton btnPausa;
     private JButton btnReiniciar;
     private ControlJuego controlJuego;
     private JLabel lblTimer;
@@ -25,20 +26,30 @@ public class PanelControles extends JPanel {
         this.controlJuego = controlJuego;
         setLayout(new FlowLayout());
         btnIniciar = new JButton("Iniciar");
+        btnPausa = new JButton("Pausa");
         btnReiniciar = new JButton("Reiniciar");
         lblTimer = new JLabel("Tiempo: 0s");
         lblMoves = new JLabel("Movimientos: 0");
         lblScore = new JLabel("Puntuación: 0");
 
         add(btnIniciar);
+        add(btnPausa);
         add(btnReiniciar);
         add(lblTimer);
         add(lblMoves);
         add(lblScore);
 
         btnIniciar.addActionListener(e -> {
+            controlJuego.setGameStarted(true);
             new Thread(() -> controlJuego.iniciarJuego()).start();
             timer.start();
+        });
+
+        btnPausa.addActionListener(e -> {
+            controlJuego.pauseGame();
+            // Mostrar ventana de pausa
+            PantallaPausa pausa = new PantallaPausa(null, controlJuego);
+            pausa.setVisible(true);
         });
 
         btnReiniciar.addActionListener(e -> controlJuego.reiniciarJuego());

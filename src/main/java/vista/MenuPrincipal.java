@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import util.ConfiguracionJuego;
 
 /**
- * Pantalla de inicio que permite configurar opciones y comenzar el juego.
+ * Pantalla de inicio que permite configurar opciones, iniciar la partida, ver el tutorial y salir.
  */
 public class MenuPrincipal extends JFrame {
     private ConfiguracionJuego configuracion;
@@ -17,12 +17,10 @@ public class MenuPrincipal extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Título principal
         JLabel titulo = new JLabel("Juego del Laberinto", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 32));
         add(titulo, BorderLayout.NORTH);
 
-        // Panel con los botones principales
         JPanel panelBotones = new JPanel(new GridLayout(4, 1, 10, 10));
         JButton btnIniciar = new JButton("Iniciar Juego");
         JButton btnOpciones = new JButton("Opciones");
@@ -35,7 +33,6 @@ public class MenuPrincipal extends JFrame {
         panelBotones.add(btnSalir);
         add(panelBotones, BorderLayout.CENTER);
 
-        // Acciones de los botones
         btnIniciar.addActionListener((ActionEvent e) -> {
             iniciarJuego();
         });
@@ -45,7 +42,7 @@ public class MenuPrincipal extends JFrame {
         });
         btnTutorial.addActionListener((ActionEvent e) -> {
             JOptionPane.showMessageDialog(this,
-                    "Tutorial:\n- Usa las flechas para mover al jugador.\n- El objetivo es alcanzar la salida (cuadro verde).\n- La IA se mueve automáticamente.\n",
+                    "Tutorial:\n- Usa las flechas para mover al jugador (una vez iniciada la partida).\n- La IA calculará su ruta en tiempo real.\n- Usa el botón Pausa para detener la partida temporalmente.\n",
                     "Tutorial", JOptionPane.INFORMATION_MESSAGE);
         });
         btnSalir.addActionListener((ActionEvent e) -> System.exit(0));
@@ -72,16 +69,13 @@ public class MenuPrincipal extends JFrame {
         modelo.Jugador jugador = new modelo.Jugador(new modelo.Posicion(0, 0));
         modelo.IAJugador iaJugador = new modelo.IAJugador(new modelo.Posicion(0, 0));
 
-        // Calcular ruta de la IA
-        controlador.ControladorIA controladorIA = new controlador.ControladorIA(laberinto);
-        iaJugador.setRuta(controladorIA.calcularRuta(new modelo.Posicion(0, 0), new modelo.Posicion(ancho - 1, alto - 1)));
-
+        // La IA no pre-calcula la ruta completa; se calculará en tiempo real
         // Crear la vista y el controlador del juego
         VistaLaberinto vistaLaberinto = new VistaLaberinto(laberinto, jugador, iaJugador);
         controlador.ControlJuego controlJuego = new controlador.ControlJuego(laberinto, jugador, iaJugador, vistaLaberinto);
-        // Ajustar la velocidad de la IA con el parámetro configurado
+        // Ajustar la velocidad de la IA según la configuración
         controlJuego.setIaDelay(configuracion.getIaDelay());
-        vista.PanelControles panelControles = new vista.PanelControles(controlJuego);
-        new VentanaPrincipal(jugador, iaJugador, vistaLaberinto, panelControles);
+        PanelControles panelControles = new PanelControles(controlJuego);
+        new VentanaPrincipal(jugador, iaJugador, vistaLaberinto, panelControles, controlJuego);
     }
 }

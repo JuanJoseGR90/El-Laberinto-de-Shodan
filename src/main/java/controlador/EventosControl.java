@@ -21,6 +21,9 @@ public class EventosControl extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // Si el controlador es nulo o la partida no se ha iniciado, no se procesa el movimiento.
+        if (controlJuego == null || !controlJuego.isGameStarted()) return;
+
         int key = e.getKeyCode();
         int deltaX = 0, deltaY = 0;
         if (key == KeyEvent.VK_UP) {
@@ -32,8 +35,6 @@ public class EventosControl extends KeyAdapter {
         } else if (key == KeyEvent.VK_RIGHT) {
             deltaX = 1;
         }
-        if (controlJuego != null) {
-            controlJuego.procesarMovimiento(deltaX, deltaY);
-        }
+        controlJuego.procesarMovimiento(deltaX, deltaY);
     }
 }

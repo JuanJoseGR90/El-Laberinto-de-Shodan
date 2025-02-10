@@ -8,13 +8,13 @@ public class ConfiguracionJuego {
     private int altoLaberinto;
     private int iaDelay; // milisegundos de retraso para la IA; aumentar este valor reduce la velocidad
     private String tipoLaberinto; // "Prim" o "DFS"
-    private int dificultad; // valor numérico que representa el nivel de dificultad
+    private int dificultad; // Nivel de dificultad
 
     // Constructor con valores por defecto
     public ConfiguracionJuego() {
-        this.anchoLaberinto = 10;
-        this.altoLaberinto = 10;
-        this.iaDelay = 200; // Por ejemplo, 200ms; aumentar este valor reduce la velocidad de la IA
+        this.anchoLaberinto = 30;  // Laberinto de 30 columnas
+        this.altoLaberinto = 30;   // Laberinto de 30 filas
+        this.iaDelay = 200;        // 200ms; si se desea reducir la velocidad, aumenta este valor
         this.tipoLaberinto = "Prim";
         this.dificultad = 1;
     }

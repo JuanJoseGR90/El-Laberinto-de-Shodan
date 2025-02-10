@@ -4,6 +4,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import modelo.Jugador;
 
+/**
+ * Clase para manejar eventos de teclado.
+ */
 public class EventosControl extends KeyAdapter {
     private Jugador jugador;
     private ControlJuego controlJuego;
@@ -29,12 +32,8 @@ public class EventosControl extends KeyAdapter {
         } else if (key == KeyEvent.VK_RIGHT) {
             deltaX = 1;
         }
-        // Se delega el manejo del movimiento al controlador principal
-        try {
+        if (controlJuego != null) {
             controlJuego.procesarMovimiento(deltaX, deltaY);
-        } catch (Exception ex) {
-            System.err.println("Movimiento no permitido: " + ex.getMessage());
         }
     }
 }
-

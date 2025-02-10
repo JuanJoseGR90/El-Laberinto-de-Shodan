@@ -2,6 +2,9 @@ package vista;
 
 import modelo.Laberinto;
 
+/**
+ * Vista en consola para mostrar el laberinto.
+ */
 public class VistaConsola {
     private Laberinto laberinto;
 

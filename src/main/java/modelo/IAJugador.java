@@ -3,9 +3,12 @@ package modelo;
 import java.util.List;
 import util.AStar;
 
+/**
+ * Clase que representa al jugador controlado por la IA.
+ */
 public class IAJugador {
     private Posicion posicion;
-    private List<Posicion> ruta; // Ruta calculada por el algoritmo de búsqueda
+    private List<Posicion> ruta; // Ruta calculada por A*.
 
     public IAJugador(Posicion posicionInicial) {
         this.posicion = posicionInicial;
@@ -19,7 +22,9 @@ public class IAJugador {
         this.ruta = ruta;
     }
 
-    // Avanza al siguiente paso de la ruta
+    /**
+     * Avanza al siguiente paso de la ruta calculada.
+     */
     public void avanzar() {
         if (ruta != null && !ruta.isEmpty()) {
             this.posicion = ruta.remove(0);

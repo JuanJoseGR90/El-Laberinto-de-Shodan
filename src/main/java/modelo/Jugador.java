@@ -1,5 +1,10 @@
 package modelo;
 
+import modelo.Laberinto;
+
+/**
+ * Clase que representa al jugador humano en el laberinto.
+ */
 public class Jugador {
     private Posicion posicion;
 
@@ -13,24 +18,23 @@ public class Jugador {
 
     /**
      * Mueve al jugador desde su posición actual a una nueva posición.
-     *
-     * @param deltaX La variación en el eje X (por ejemplo, 1 para mover a la derecha, -1 para mover a la izquierda).
-     * @param deltaY La variación en el eje Y (por ejemplo, 1 para mover hacia abajo, -1 para mover hacia arriba).
-     * @param laberinto El laberinto en el cual se realiza el movimiento.
-     * @throws IllegalArgumentException Si la nueva posición se sale de los límites del laberinto.
-     * @throws IllegalStateException Si se intenta mover a través de una pared (por ejemplo, hay una pared a la derecha y se intenta mover a la derecha).
+     * @param deltaX Variación en el eje X.
+     * @param deltaY Variación en el eje Y.
+     * @param laberinto Laberinto en el que se realiza el movimiento.
+     * @throws IllegalArgumentException Si el movimiento sale de los límites.
+     * @throws IllegalStateException Si se intenta mover a través de una pared.
      */
     public void mover(int deltaX, int deltaY, Laberinto laberinto) {
         int nuevoX = posicion.getX() + deltaX;
         int nuevoY = posicion.getY() + deltaY;
 
-        // Validar que la nueva posición se encuentre dentro de los límites
-        if(nuevoX < 0 || nuevoX >= laberinto.getAncho() || nuevoY < 0 || nuevoY >= laberinto.getAlto()) {
+        // Validar límites del laberinto.
+        if (nuevoX < 0 || nuevoX >= laberinto.getAncho() || nuevoY < 0 || nuevoY >= laberinto.getAlto()) {
             throw new IllegalArgumentException("Movimiento fuera de los límites del laberinto.");
         }
 
-        // Validar que no se intente mover a través de una pared
         Celda celdaActual = laberinto.getCelda(posicion.getX(), posicion.getY());
+        // Validar movimiento a través de una pared.
         if(deltaX == 1 && celdaActual.isParedDerecha()) {
             throw new IllegalStateException("Movimiento no permitido, hay una pared a la derecha.");
         }
@@ -44,9 +48,8 @@ public class Jugador {
             throw new IllegalStateException("Movimiento no permitido, hay una pared arriba.");
         }
 
-        // Si la validación es exitosa, se procede a mover al jugador
+        // Actualiza la posición.
         posicion.setX(nuevoX);
         posicion.setY(nuevoY);
     }
-
 }

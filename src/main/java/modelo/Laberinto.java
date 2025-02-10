@@ -1,9 +1,18 @@
 package modelo;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+/**
+ * Clase que representa el laberinto y gestiona las celdas.
+ */
 public class Laberinto {
     private Celda[][] celdas;
     private int ancho, alto;
     private Celda celdaSalida;
+
+    // Soporte para el patrón Observer: notifica cambios en el laberinto.
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public Laberinto(int ancho, int alto) {
         if(ancho <= 0 || alto <= 0) {
@@ -17,7 +26,7 @@ public class Laberinto {
                 celdas[i][j] = new Celda(j, i);
             }
         }
-        // Ejemplo: la celda de salida es la inferior derecha
+        // Definición: la celda de salida es la inferior derecha.
         celdaSalida = getCelda(ancho - 1, alto - 1);
     }
 
@@ -35,24 +44,46 @@ public class Laberinto {
     public int getAncho() { return ancho; }
     public int getAlto() { return alto; }
 
-    // Método de depuración para imprimir el laberinto en consola
+    /**
+     * Método de depuración para imprimir el laberinto en consola.
+     */
     public void imprimir() {
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < alto; i++) {
             // Imprime las paredes superiores de cada celda
             for (int j = 0; j < ancho; j++) {
-                System.out.print(celdas[i][j].isParedArriba() ? "+---" : "+   ");
+                sb.append(celdas[i][j].isParedArriba() ? "+---" : "+   ");
             }
-            System.out.println("+");
+            sb.append("+\n");
             // Imprime las paredes laterales
             for (int j = 0; j < ancho; j++) {
-                System.out.print(celdas[i][j].isParedIzquierda() ? "|   " : "    ");
+                sb.append(celdas[i][j].isParedIzquierda() ? "|   " : "    ");
             }
-            System.out.println("|");
+            sb.append("|\n");
         }
         // Línea final inferior
         for (int j = 0; j < ancho; j++) {
-            System.out.print("+---");
+            sb.append("+---");
         }
-        System.out.println("+");
+        sb.append("+");
+        System.out.println(sb.toString());
+    }
+
+    /**
+     * Agrega un listener para recibir notificaciones de cambios.
+     * @param listener El listener a agregar.
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Notifica un cambio en el laberinto.
+     * @param property Nombre de la propiedad.
+     * @param oldValue Valor antiguo.
+     * @param newValue Valor nuevo.
+     */
+    public void notifyChange(String property, Object oldValue, Object newValue) {
+        pcs.firePropertyChange(property, oldValue, newValue);
     }
 }

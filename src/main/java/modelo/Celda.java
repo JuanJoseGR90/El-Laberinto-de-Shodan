@@ -1,5 +1,8 @@
 package modelo;
 
+/**
+ * Clase que representa una celda del laberinto.
+ */
 public class Celda {
     private int x, y;
     private boolean paredArriba, paredAbajo, paredIzquierda, paredDerecha;
@@ -16,7 +19,7 @@ public class Celda {
         this.visitada = false;
     }
 
-    // Getters y Setters
+    // Getters y setters
     public int getX() { return x; }
     public int getY() { return y; }
     public boolean isParedArriba() { return paredArriba; }

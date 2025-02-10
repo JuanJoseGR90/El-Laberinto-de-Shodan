@@ -15,11 +15,14 @@ import modelo.Jugador;
 import modelo.IAJugador;
 import modelo.Posicion;
 
+/**
+ * Vista gráfica del laberinto.
+ */
 public class VistaLaberinto extends JPanel {
     private Laberinto laberinto;
     private Jugador jugador;
     private IAJugador iaJugador;
-    private int celdaSize = 30; // Tamaño en píxeles de cada celda
+    private int celdaSize = 30; // Tamaño de cada celda en píxeles
 
     public VistaLaberinto(Laberinto laberinto, Jugador jugador, IAJugador iaJugador) {
         this.laberinto = laberinto;
@@ -36,7 +39,6 @@ public class VistaLaberinto extends JPanel {
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
 
-        // Asociamos las flechas a las acciones de movimiento
         im.put(KeyStroke.getKeyStroke("UP"), "moverArriba");
         im.put(KeyStroke.getKeyStroke("DOWN"), "moverAbajo");
         im.put(KeyStroke.getKeyStroke("LEFT"), "moverIzquierda");
@@ -45,7 +47,6 @@ public class VistaLaberinto extends JPanel {
         am.put("moverArriba", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Mueve al jugador hacia arriba y repinta la vista
                 jugador.mover(0, -1, laberinto);
                 repaint();
             }
@@ -76,7 +77,7 @@ public class VistaLaberinto extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Dibujar el laberinto (paredes de cada celda)
+        // Dibujar el laberinto
         for (int i = 0; i < laberinto.getAlto(); i++) {
             for (int j = 0; j < laberinto.getAncho(); j++) {
                 Celda celda = laberinto.getCelda(j, i);
@@ -92,20 +93,20 @@ public class VistaLaberinto extends JPanel {
                     g.drawLine(x, y + celdaSize, x + celdaSize, y + celdaSize);
             }
         }
-        // Dibujar la celda de salida (por ejemplo, un rectángulo verde)
+        // Dibujar la celda de salida (verde)
         g.setColor(Color.GREEN);
         int salidaX = (laberinto.getAncho() - 1) * celdaSize;
         int salidaY = (laberinto.getAlto() - 1) * celdaSize;
-        g.drawRect(salidaX + 2, salidaY + 2, celdaSize - 4, celdaSize - 4);
+        g.fillRect(salidaX + 2, salidaY + 2, celdaSize - 4, celdaSize - 4);
 
-        // Dibujar al jugador (círculo azul)
+        // Dibujar al jugador (azul)
         g.setColor(Color.BLUE);
         Posicion posJugador = jugador.getPosicion();
         int jugadorX = posJugador.getX() * celdaSize;
         int jugadorY = posJugador.getY() * celdaSize;
         g.fillOval(jugadorX + celdaSize / 4, jugadorY + celdaSize / 4, celdaSize / 2, celdaSize / 2);
 
-        // Dibujar a la IA (círculo rojo)
+        // Dibujar a la IA (rojo)
         g.setColor(Color.RED);
         Posicion posIA = iaJugador.getPosicion();
         int iaX = posIA.getX() * celdaSize;

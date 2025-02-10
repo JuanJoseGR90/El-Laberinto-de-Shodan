@@ -6,14 +6,13 @@ import modelo.IAJugador;
 import modelo.Posicion;
 import util.GeneradorLaberinto;
 import vista.VistaLaberinto;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingWorker;
 
 /**
- * Controlador principal del juego. Gestiona la lógica del juego, el movimiento
- * del jugador y la actualización del estado del juego.
+ * Controlador principal del juego. Gestiona la lógica, el movimiento del jugador,
+ * la IA, y el sistema de temporizador y puntuación.
  */
 public class ControlJuego {
     private static final Logger LOGGER = Logger.getLogger(ControlJuego.class.getName());
@@ -24,30 +23,38 @@ public class ControlJuego {
     private boolean juegoTerminado;
     private Posicion posicionMeta;
 
+    // Configuración para la velocidad de la IA
+    private int iaDelay = 100; // valor en milisegundos; aumentar este número reduce la velocidad de la IA
+
+    // Variables para el sistema de puntuación y temporizador
+    private long startTime;
+    private int moveCount;
+    private int score;
+
     public ControlJuego(Laberinto laberinto, Jugador jugador, IAJugador iaJugador, VistaLaberinto vista) {
         this.laberinto = laberinto;
         this.jugador = jugador;
         this.iaJugador = iaJugador;
         this.vista = vista;
         this.juegoTerminado = false;
-        // Asumimos que la salida es la celda inferior derecha
         this.posicionMeta = new Posicion(laberinto.getAncho() - 1, laberinto.getAlto() - 1);
     }
 
     /**
-     * Inicia el ciclo de juego en un hilo separado utilizando SwingWorker para
-     * no bloquear la interfaz gráfica.
+     * Inicia el juego en un hilo separado y reinicia el temporizador y el contador de movimientos.
      */
     public void iniciarJuego() {
+        startTime = System.currentTimeMillis();
+        moveCount = 0;
         SwingWorker<Void, Void> gameWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() {
                 while (!juegoTerminado) {
                     try {
                         actualizarJuego();
-                        // Notificar a la vista para que se repinte.
                         vista.repaint();
-                        Thread.sleep(100);
+                        // Se utiliza iaDelay para controlar la velocidad de la IA
+                        Thread.sleep(iaDelay);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         LOGGER.log(Level.SEVERE, "El hilo de juego fue interrumpido", e);
@@ -62,13 +69,12 @@ public class ControlJuego {
     }
 
     /**
-     * Procesa el movimiento del jugador.
-     * @param deltaX Variación en el eje X.
-     * @param deltaY Variación en el eje Y.
+     * Procesa el movimiento del jugador y actualiza el contador de movimientos.
      */
     public void procesarMovimiento(int deltaX, int deltaY) {
         try {
             jugador.mover(deltaX, deltaY, laberinto);
+            moveCount++;
         } catch (Exception ex) {
             LOGGER.log(Level.WARNING, "Movimiento no permitido: " + ex.getMessage(), ex);
         }
@@ -93,50 +99,60 @@ public class ControlJuego {
     }
 
     /**
-     * Finaliza el juego.
+     * Finaliza el juego y se podría mostrar la puntuación final.
      */
     public void finalizarJuego() {
         juegoTerminado = true;
+        // Aquí se podría invocar una pantalla final que muestre la puntuación
     }
 
     /**
-     * Reinicia el juego, generando un nuevo laberinto y reseteando posiciones.
+     * Reinicia el juego generando un nuevo laberinto y reseteando temporizador y contador.
      */
     public void reiniciarJuego() {
         try {
             int ancho = laberinto.getAncho();
             int alto = laberinto.getAlto();
-            Laberinto laberintoAntiguo = laberinto;
-            // Se utiliza el generador de laberintos; aquí se elige el método de Prim.
             laberinto = new Laberinto(ancho, alto);
-            GeneradorLaberinto.generarConPrim(laberinto);
-
-            // Reiniciar la posición del jugador e IA a la celda de inicio (0,0)
+            GeneradorLaberinto.generar(laberinto, 0, 0);
             jugador.getPosicion().setX(0);
             jugador.getPosicion().setY(0);
             iaJugador.getPosicion().setX(0);
             iaJugador.getPosicion().setY(0);
-
-            // Actualizar la posición meta (celda inferior derecha)
             posicionMeta = new Posicion(ancho - 1, alto - 1);
 
-            // Recalcular la ruta de la IA utilizando A*
-            ControladorIA controladorIA = new ControladorIA(laberinto);
+            controlador.ControladorIA controladorIA = new controlador.ControladorIA(laberinto);
             iaJugador.setRuta(controladorIA.calcularRuta(new Posicion(0, 0), posicionMeta));
 
             juegoTerminado = false;
-
-            // Actualizar la vista con el nuevo laberinto.
-            if (vista != null) {
-                vista.setLaberinto(laberinto);
-                vista.repaint();
-            }
+            startTime = System.currentTimeMillis();
+            moveCount = 0;
+            vista.setLaberinto(laberinto);
+            vista.repaint();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error al reiniciar el juego", e);
         }
     }
 
-    public boolean isJuegoTerminado() {
-        return juegoTerminado;
+    /**
+     * Ajusta la velocidad de la IA mediante el retraso (delay) en milisegundos.
+     * @param delay Valor en milisegundos.
+     */
+    public void setIaDelay(int delay) {
+        this.iaDelay = delay;
+    }
+
+    // Getters para temporizador y contador.
+    public long getStartTime() { return startTime; }
+    public int getMoveCount() { return moveCount; }
+
+    /**
+     * Calcula la puntuación del juego según los movimientos y el tiempo transcurrido.
+     * @return Puntuación calculada.
+     */
+    public int getScore() {
+        long elapsed = System.currentTimeMillis() - startTime;
+        score = 10000 - moveCount - (int)(elapsed / 1000);
+        return score;
     }
 }
